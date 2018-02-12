@@ -15,6 +15,8 @@ class Data(db.Model):
     def __init__(self, notes):
         # self.notes refers to the instance notes created just now.
         # ?? would this overright the initial notes declared above?
+        # Ans: yes it absolutely will. This is not designed for submission tho.
+        # This is to ensure that when receiving, notes field is present!
         self.notes = notes
 
     # __repr__ is a method for class Data to have a printable self
