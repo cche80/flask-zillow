@@ -2,6 +2,7 @@
 *.pyc
 config.py
 flask-aws/
+misc/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

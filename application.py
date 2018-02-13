@@ -24,10 +24,12 @@ application.secret_key = 'cC1YCIWOj9GgWspgNEo2'
 @application.route('/', methods=['GET', 'POST'])
 @application.route('/index', methods=['GET', 'POST'])
 def index():
+    # dynamically generate 2 forms with user request form
     form1 = EnterDBInfo(request.form) 
     form2 = RetrieveDBInfo(request.form) 
     
     if request.method == 'POST' and form1.validate():
+        # specifying an id is NOT necessary, default auto_intremental by experiment.
         data_entered = Data(notes=form1.dbNotes.data)
         try:     
             db.session.add(data_entered)
@@ -39,15 +41,25 @@ def index():
         
     if request.method == 'POST' and form2.validate():
         try:   
+            # get the user input from form2 submitted by user
+            # the data is in the numRetrieve field (form contains field)
             num_return = int(form2.numRetrieve.data)
+            # make the query with Data object is possible because:
+            # Data inhe db.Model generated from Flask with SQLAlchemy
+            # so Data has all the methods in db, which includes query
+            # And here onwards you can use SQLAlchemy Query interface.
             query_db = Data.query.order_by(Data.id.desc()).limit(num_return)
+            # Each q is a Data object, Data.query returns a bunch of Data
+            # print each out for debugging.
             for q in query_db:
+                print(q.id)
                 print(q.notes)
             db.session.close()
         except:
             db.session.rollback()
-        return render_template('results.html', results=query_db, num_return=num_return)                
-    
+        # after everything, render the result on html page for user consumption
+        return render_template('results.html', results=query_db, num_return=num_return)
+    # render index page if it is a GET methodd 
     return render_template('index.html', form1=form1, form2=form2)
 
 if __name__ == '__main__':
